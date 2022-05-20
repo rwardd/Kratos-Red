@@ -5,13 +5,30 @@
 
 #include <zephyr.h>
 #include <device.h>
+#include <devicetree.h>
 #include <stdio.h>
 #include <sys/printk.h>
 #include <drivers/i2c.h>
 #include <errno.h>
 #include "argon_i2c.h"
 
+#include <drivers/gpio.h>
+#include <usb/usb_device.h>
+#include <drivers/uart.h>   
+#include <sys_clock.h>
+#include <timing/timing.h>
+
 #define AMG8833_I2C_ADDR 0x69
+
+#define TEMP_25 25
+#define TEMP_26 26
+#define TEMP_27 27
+#define TEMP_28 28
+#define TEMP_29 29
+#define TEMP_30 30
+#define TEMP_31 31
+#define TEMP_32 32
+#define TEMP_33 33
 
 
 int16_t read_pixel_temp_reg(const struct device * dev, unsigned char reg) {
@@ -44,40 +61,63 @@ void print_grid(uint16_t* grid) {
 		if (i % 8 == 0) {
 			printk("\n");
 		}
-		printk("%f, ", 0.25* grid[i]);
+		printk("%f,", 0.25* grid[i]);
 	}
 	return;
 }
 
-void print_grid_float(float* grid) {
+void print_grid_mapped(int8_t* grid) {
 	for (int i = 0; i < 64; i++) {
 		if (i % 8 == 0) {
 			printk("\n");
+			printk("%d,", i/8);
 		}
-		printk("%f, ", grid[i]);
+		printk("%d,", grid[i]);
 	}
 	return;
 }
 
-void amg8833_thread_entry(void) {
-    //k_msleep(2000);
+uint8_t map_grid(float pixel) {
+	if (pixel < TEMP_25) {
+		return 0;
+	} else if (pixel < TEMP_27 && pixel >= TEMP_25) {
+		return 1;
+	} else if (pixel < TEMP_29 && pixel >= TEMP_27) {
+		return 2;
+	} else if (pixel < TEMP_31 && pixel >= TEMP_29) {
+		return 3;
+	} else if (pixel < TEMP_33 && pixel >= TEMP_31) {
+		return 4;
+	} else if (pixel >= TEMP_33) {
+		return 5;
+	} 
+				
+}
 
-    const struct device *i2cDev = DEVICE_DT_GET(DT_NODELABEL(i2c0));
+
+void amg8833_thread_entry(void) {
+    k_msleep(100);
+
+    const struct device *i2cDev = DEVICE_DT_GET(DT_NODELABEL(i2c1));
+
+	const struct device *console_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
+
+	if (usb_enable(NULL)) {
+        return;
+	}
+
 
     if (!device_is_ready(i2cDev)) {
 		printk("I2C: Device is not ready.\n");
 		return;
 	}
 	
-	uint8_t data[64];
-    for (int i = 0; i < sizeof(data); i++) {
-        data[i] = 0;
-    }
 
 	uint16_t pixelGrid[64] = {0};
-	float tempGrid[64] = {0};
+	uint8_t mappedGrid[64] = {0};
     unsigned char pixelLowReg;
-	printk("wegood\n");
+	float holder;
+	
 	while (1) {
     	for (int i = 0; i < MAX_PIXELS; i++) {
         	pixelLowReg = TEMPERATURE_REGISTER_START + (2 * i);
@@ -89,10 +129,16 @@ void amg8833_thread_entry(void) {
 			}
 			
     	}
-		print_grid(pixelGrid);
+		//print_grid(pixelGrid);
 		//print_grid_float(tempGrid);
-		k_msleep(500);
-		printk("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+		for (int i = 0; i < MAX_PIXELS; i++) {
+			mappedGrid[i] = map_grid(pixelGrid[i] * 0.25);
+		}
+		print_grid_mapped(mappedGrid);
+		
+		k_msleep(50);
+		//printk("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+
 		
 	}
 

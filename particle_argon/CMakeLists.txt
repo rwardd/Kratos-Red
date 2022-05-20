@@ -9,10 +9,10 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(argon_i2c)
 
 include_directories(
-                      ~/csse4011/repo/project/argon/lib/
+                      ~/csse4011/Kratos-Red/particle_argon/lib
                       )
 
 target_sources(app PRIVATE
   src/main.c
-  ~/csse4011/repo/project/argon/lib/argon_i2c.c
+  ~/csse4011/Kratos-Red/particle_argon/lib/argon_i2c.c
 )
