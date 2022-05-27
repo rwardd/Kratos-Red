@@ -6,9 +6,10 @@ import json
 import tkinter as tk
 import numpy as np
 import sys
-import seaborn as sb
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+
+
+from PyQt5 import QtWidgets
+import pyqtgraph as pg
 
 row1 = [0, 0, 0, 0, 0, 0, 0, 0]
 row2 = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -18,12 +19,12 @@ row5 = [0, 0, 0, 0, 0, 0, 0, 0]
 row6 = [0, 0, 0, 0, 0, 0, 0, 0]
 row7 = [0, 0, 0, 0, 0, 0, 0, 0]
 row8 = [0, 0, 0, 0, 0, 0, 0, 0]
-plt.ion()
-data = np.zeros((8,8))
-fig = plt.imshow(data, cmap=plt.cm.hot,interpolation='lanczos')
-plt.colorbar()
-plt.clim(1,8)
-plt.show()
+data = np.reshape(np.repeat(0, 64), (8, 8))  # np.zeros((8, 8))
+#fig = plt.imshow(data, cmap=plt.cm.hot, interpolation='lanczos')
+
+# plt.colorbar()
+#plt.clim(1, 8)
+
 
 def print_grid():
     print("ROW8: ", row8)
@@ -35,11 +36,10 @@ def print_grid():
     print("ROW2: ", row2)
     print("ROW1: ", row1)
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    
+
 
 def heatmap():
-   
-    
+
     data[0] = row8
     data[1] = row7
     data[2] = row6
@@ -48,42 +48,40 @@ def heatmap():
     data[5] = row3
     data[6] = row2
     data[7] = row1
-    
-    #ax = sb.heatmap(data, vmin=0, vmax=5, cmap="coolwarm")
-    #fig.canvas.draw()
-    #fig.canvas.flush_events()
-    #plt.pause(0.0001)
-    #plt.clf()
 
-    fig.set_data(data)
-    plt.show()
-    
+    #ax = sb.heatmap(data, vmin=0, vmax=5, cmap="coolwarm")
+    # fig.canvas.draw()
+    # fig.canvas.flush_events()
+    # plt.pause(0.0001)
+    # plt.clf()
+
+    # fig.set_data(data)
+    # time.sleep(0.1)
 
     print(data)
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
-
 def read_loop():
-    s = serial.Serial("/dev/ttyACM0", 115200)
+    s = serial.Serial("/dev/tty.usbmodem21401")
     output = ""
-    
+
     outArr = []
 
     while True:
         try:
-            
+
             data = s.readline()
-            #print(data)
+            # print(data)
             data = data.decode()
-            #print(str(data))
+            # print(str(data))
             line = data.split(',')
-            #print(line)
+            # print(line)
             line = line[:-1]
             index = line[0]
             del line[0]
-            
-            for i in range (8):
+
+            for i in range(8):
                 if index == '0':
                     row1[i] = int(line[i])
                 elif index == '1':
@@ -101,12 +99,8 @@ def read_loop():
                 elif index == '7':
                     row8[i] = int(line[i])
 
-            
-            #heatmap()
-            #print_grid()
-            
-            
-            
+            heatmap()
+            # print_grid()
 
         except Exception as e:
             exception_type, exception_object, exception_traceback = sys.exc_info()
@@ -115,12 +109,15 @@ def read_loop():
             outArr = []
             NodeData = []
             output = ""
+            break
             continue
-#if __name__ == "__main__":
+
+
+# if __name__ == "__main__":
 
     #t1 = threading.Thread(target=read_loop, args=())
-    #t1.start()
+    # t1.start()
     #t2 = threading.Thread(target=heatmap, args=())
-    ##t2.start()
-    #read_loop()
-    #heatmap()
+    # t2.start()
+   # read_loop()
+    # heatmap()

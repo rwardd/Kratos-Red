@@ -1,0 +1,36 @@
+# Available runners configured by board.cmake.
+runners:
+- pyocd
+- nrfjprog
+- jlink
+
+# Default flash runner if --runner is not given.
+flash-runner: pyocd
+
+# Default debug runner if --runner is not given.
+debug-runner: pyocd
+
+# Common runner configuration values.
+config:
+  board_dir: /Users/rward/csse4011/zephyrproject/zephyr/boards/arm/particle_argon
+  # Build outputs:
+  elf_file: zephyr.elf
+  hex_file: zephyr.hex
+  bin_file: zephyr.bin
+  # Host tools:
+  gdb: /Users/rward/Downloads/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb
+  openocd: /opt/homebrew/bin/openocd
+  openocd_search:
+
+# Runner specific arguments
+args:
+  pyocd:
+    - --dt-flash=y
+    - --target=nrf52840
+    - --frequency=4000000
+  nrfjprog:
+    - --softreset
+  jlink:
+    - --dt-flash=y
+    - --device=nrf52
+    - --speed=4000
