@@ -6,7 +6,6 @@ import json
 import tkinter as tk
 import numpy as np
 import sys
-<<<<<<< HEAD
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, QtCore
@@ -36,12 +35,6 @@ def map_value(x, inMin, inMax, outMin, outMax):
     else:
         return int((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin)
 
-=======
-
-
-from PyQt5 import QtWidgets
-import pyqtgraph as pg
->>>>>>> ac3e0f0f66741289bf43d8753d0d62fc56fb9e92
 
 row1 = [0, 0, 0, 0, 0, 0, 0, 0]
 row2 = [0, 0, 0, 0, 0, 0, 0, 0]
