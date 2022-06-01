@@ -34,6 +34,14 @@ void scu_ble_connect_thread_entry(void);
 void update_data_thread(void);
 
 extern struct k_fifo bpm_spo2_fifo;
+extern int16_t row1[8];
+extern int16_t row2[8];
+extern int16_t row3[8];
+extern int16_t row4[8];
+extern int16_t row5[8];
+extern int16_t row6[8];
+extern int16_t row7[8];
+extern int16_t row8[8];
 
 //gatt characteristic user values
 

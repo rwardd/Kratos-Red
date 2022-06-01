@@ -17,6 +17,7 @@
 #include <drivers/uart.h>   
 #include <sys_clock.h>
 #include <timing/timing.h>
+#include "argon_ble.h"
 
 #define AMG8833_I2C_ADDR 0x69
 
@@ -130,13 +131,40 @@ void amg8833_thread_entry(void) {
 			}
 			
     	}
+
+		//insert into GATT
+		for (int i = 0; i < 8; i++) {
+			row1[i] = pixelGrid[i];
+		}
+		for (int i = 0; i < 8; i++) {
+			row2[i] = pixelGrid[i+8];
+		}
+		for (int i = 0; i < 8; i++) {
+			row3[i] = pixelGrid[i+16];
+		}
+		for (int i = 0; i < 8; i++) {
+			row4[i] = pixelGrid[i+24];
+		}
+		for (int i = 0; i < 8; i++) {
+			row5[i] = pixelGrid[i+32];
+		}
+		for (int i = 0; i < 8; i++) {
+			row6[i] = pixelGrid[i+40];
+		}
+		for (int i = 0; i < 8; i++) {
+			row7[i] = pixelGrid[i+48];
+		}
+		for (int i = 0; i < 8; i++) {
+			row8[i] = pixelGrid[i+56];
+		}
+
 		//print_grid(pixelGrid);
 		//print_grid_float(tempGrid);
 		for (int i = 0; i < MAX_PIXELS; i++) {
 			mappedGrid[i] = map_grid(pixelGrid[i] * 0.25);
 		}
 		//print_grid_mapped(mappedGrid);
-		print_grid(pixelGrid);
+		//print_grid(pixelGrid);
 		k_msleep(10);
 		//printk("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 

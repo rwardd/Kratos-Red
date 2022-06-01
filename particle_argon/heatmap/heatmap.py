@@ -15,6 +15,7 @@ from pgcolorbar.colorlegend import ColorLegendItem
 import cv2
 from scipy.interpolate import griddata
 import math
+import traceback
 
 HEIGHT = 240
 WIDTH = 240

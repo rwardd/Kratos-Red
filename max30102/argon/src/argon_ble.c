@@ -30,6 +30,7 @@ static const struct bt_data ad[] = {
 
 bool bleConnected = false;
 
+// GATT UUIDs
 static struct bt_uuid_128 scuUUID = BT_UUID_INIT_128(
     0xd0, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
     0x26, 0x49, 0x60, 0xeb, 0x12, 0x34, 0x56, 0x78);
@@ -38,8 +39,48 @@ static struct bt_uuid_128 bpmSpoUUID = BT_UUID_INIT_128(
     0xd2, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
     0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
 
+static struct bt_uuid_128 row1UUID = BT_UUID_INIT_128(
+    0xd3, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
 
+static struct bt_uuid_128 row2UUID = BT_UUID_INIT_128(
+    0xd4, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row3UUID = BT_UUID_INIT_128(
+    0xd5, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row4UUID = BT_UUID_INIT_128(
+    0xd6, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row5UUID = BT_UUID_INIT_128(
+    0xd7, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row6UUID = BT_UUID_INIT_128(
+    0xd8, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row7UUID = BT_UUID_INIT_128(
+    0xd9, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+static struct bt_uuid_128 row8UUID = BT_UUID_INIT_128(
+    0xdA, 0x92, 0x67, 0x35, 0x78, 0x16, 0x21, 0x91,
+    0x26, 0x49, 0x60, 0xeb, 0x06, 0xa7, 0xca, 0xcb);
+
+// GATT CHARACTERISTICS
 int8_t bpmSpoValues[2] = { 0x01, 0x02 };
+int16_t row1[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row2[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row3[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row4[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row5[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row6[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row7[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+int16_t row8[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
 static uint8_t discover_func(struct bt_conn* conn,
@@ -115,6 +156,7 @@ static void gatt_discover(void)
     printk("Discover complete\n");
 }
 
+// GATT READ CALLBACKS
 static ssize_t read_bpm_spo2_cb(struct bt_conn* conn,
     const struct bt_gatt_attr* attr, void* buff,
     uint16_t len, uint16_t offset) {
@@ -122,6 +164,16 @@ static ssize_t read_bpm_spo2_cb(struct bt_conn* conn,
     const int16_t* value = attr->user_data;
     return bt_gatt_attr_read(conn, attr, buff, len, offset, value,
         sizeof(bpmSpoValues));
+
+}
+
+static ssize_t read_row_cb(struct bt_conn* conn,
+    const struct bt_gatt_attr* attr, void* buff,
+    uint16_t len, uint16_t offset) {
+
+    const int16_t* value = attr->user_data;
+    return bt_gatt_attr_read(conn, attr, buff, sizeof(row1), offset, value,
+        sizeof(row1));
 
 }
 
@@ -135,9 +187,49 @@ BT_GATT_SERVICE_DEFINE(mobile_svc,
         BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
         read_bpm_spo2_cb, NULL, &bpmSpoValues),
 
+    BT_GATT_CHARACTERISTIC(&row1UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row1),
+
+    BT_GATT_CHARACTERISTIC(&row2UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row2),
+
+    BT_GATT_CHARACTERISTIC(&row3UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row3),
+
+    BT_GATT_CHARACTERISTIC(&row4UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row4),
+
+    BT_GATT_CHARACTERISTIC(&row5UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row5),
+
+    BT_GATT_CHARACTERISTIC(&row6UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row6),
+
+    BT_GATT_CHARACTERISTIC(&row7UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row7),
+
+    BT_GATT_CHARACTERISTIC(&row8UUID.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE | BT_GATT_PERM_READ | BT_GATT_PERM_PREPARE_WRITE,
+        read_row_cb, NULL, &row8),
+
     );
 
-
+//BLE CONNECTED/DISCONNECTED CALLBACKS
 static void connected(struct bt_conn* conn, uint8_t err)
 {
     g_conn = bt_conn_ref(conn);
@@ -185,7 +277,7 @@ static struct bt_conn_cb connCallbacks = {
     .disconnected = disconnected,
 };
 
-
+// THREAD BLE FUNCTIONS
 static void bt_ready(void)
 {
     int err;
