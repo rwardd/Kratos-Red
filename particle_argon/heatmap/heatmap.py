@@ -44,19 +44,11 @@ row5 = [0, 0, 0, 0, 0, 0, 0, 0]
 row6 = [0, 0, 0, 0, 0, 0, 0, 0]
 row7 = [0, 0, 0, 0, 0, 0, 0, 0]
 row8 = [0, 0, 0, 0, 0, 0, 0, 0]
-<<<<<<< HEAD
 
 
 data = np.zeros((8, 8))
 s = serial.Serial("/dev/ttyACM0", 115200)
 app = QtWidgets.QApplication(sys.argv)
-=======
-data = np.reshape(np.repeat(0, 64), (8, 8))  # np.zeros((8, 8))
-#fig = plt.imshow(data, cmap=plt.cm.hot, interpolation='lanczos')
-
-# plt.colorbar()
-#plt.clim(1, 8)
->>>>>>> ac3e0f0f66741289bf43d8753d0d62fc56fb9e92
 
 
 def print_grid():
@@ -81,19 +73,6 @@ def heatmap():
     data[5] = row3
     data[6] = row2
     data[7] = row1
-<<<<<<< HEAD
-=======
-
-    #ax = sb.heatmap(data, vmin=0, vmax=5, cmap="coolwarm")
-    # fig.canvas.draw()
-    # fig.canvas.flush_events()
-    # plt.pause(0.0001)
-    # plt.clf()
-
-    # fig.set_data(data)
-    # time.sleep(0.1)
-
->>>>>>> ac3e0f0f66741289bf43d8753d0d62fc56fb9e92
     print(data)
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
@@ -107,7 +86,6 @@ def heatmap():
     data[6] = row7
     data[7] = row8
 
-<<<<<<< HEAD
     #BICUBIC --- FOR HEATMAP
     points = [(math.floor(ix / 8), (ix % 8)) for ix in range(0,64)]
     gridX, gridY = np.mgrid[0:7:32j, 0:7:32j]
@@ -188,64 +166,3 @@ view_box.addItem(image)
 plot = pg.PlotItem(viewBox=view_box)
 window.addItem(plot)
 sys.exit(app.exec_())
-=======
-def read_loop():
-    s = serial.Serial("/dev/tty.usbmodem21401")
-    output = ""
-
-    outArr = []
-
-    while True:
-        try:
-
-            data = s.readline()
-            # print(data)
-            data = data.decode()
-            # print(str(data))
-            line = data.split(',')
-            # print(line)
-            line = line[:-1]
-            index = line[0]
-            del line[0]
-
-            for i in range(8):
-                if index == '0':
-                    row1[i] = int(line[i])
-                elif index == '1':
-                    row2[i] = int(line[i])
-                elif index == '2':
-                    row3[i] = int(line[i])
-                elif index == '3':
-                    row4[i] = int(line[i])
-                elif index == '4':
-                    row5[i] = int(line[i])
-                elif index == '5':
-                    row6[i] = int(line[i])
-                elif index == '6':
-                    row7[i] = int(line[i])
-                elif index == '7':
-                    row8[i] = int(line[i])
-
-            heatmap()
-            # print_grid()
-
-        except Exception as e:
-            exception_type, exception_object, exception_traceback = sys.exc_info()
-            print("Exception", e, "\r")
-            print("Line", exception_traceback.tb_lineno)
-            outArr = []
-            NodeData = []
-            output = ""
-            break
-            continue
-
-
-# if __name__ == "__main__":
-
-    #t1 = threading.Thread(target=read_loop, args=())
-    # t1.start()
-    #t2 = threading.Thread(target=heatmap, args=())
-    # t2.start()
-   # read_loop()
-    # heatmap()
->>>>>>> ac3e0f0f66741289bf43d8753d0d62fc56fb9e92
