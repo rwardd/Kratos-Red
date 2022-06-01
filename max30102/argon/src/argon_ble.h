@@ -19,8 +19,6 @@
 
 #include <drivers/gpio.h>
 
-#include <stdlib.h>
-
 #include <settings/settings.h>
 
 #include <bluetooth/bluetooth.h>
@@ -30,8 +28,12 @@
 #include <bluetooth/gatt.h>
 #include <bluetooth/services/bas.h>
 #include <bluetooth/services/hrs.h>
+#include "bpm_spo2.h"
 
 void scu_ble_connect_thread_entry(void);
+void update_data_thread(void);
+
+extern struct k_fifo bpm_spo2_fifo;
 
 //gatt characteristic user values
 

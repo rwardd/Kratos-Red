@@ -14,6 +14,7 @@ LOG_MODULE_REGISTER(led_module, LOG_LEVEL_DBG);
 
 /* Keep alive thread */
 void blinky_thread(void) {
+    
     static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
     int ret;
     ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);

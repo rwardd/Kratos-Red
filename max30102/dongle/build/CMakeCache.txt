@@ -20,9 +20,6 @@ APPLICATION_BINARY_DIR:PATH=/Users/rward/csse4011/repo/project/dongle/build
 //Application Source Directory
 APPLICATION_SOURCE_DIR:PATH=/Users/rward/csse4011/repo/project/dongle
 
-//No help, variable specified on the command line.
-BOARD:UNINITIALIZED=nrf52840dongle_nrf52840
-
 //Path to a file.
 BOARD_DIR:PATH=/Users/rward/csse4011/zephyrproject/zephyr/boards/arm/nrf52840dongle_nrf52840
 

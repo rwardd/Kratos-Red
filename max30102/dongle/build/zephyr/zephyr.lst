@@ -7030,6 +7030,7 @@ static inline int z_impl_gpio_pin_configure(const struct device *port,
     4544:	f240 6201 	movw	r2, #1537	; 0x601
     4548:	4620      	mov	r0, r4
     454a:	4798      	blx	r3
+    
     static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
     int ret;
     ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
@@ -7723,22 +7724,22 @@ void thread_base_read(void) {
 		if (dev_found) {
     49bc:	782b      	ldrb	r3, [r5, #0]
     49be:	b163      	cbz	r3, 49da <thread_base_read+0x26>
-			printk("BPM: %d \n", bpm_spo2[i]);
+			printk("BPM: %d \n", bpm_spo2[0]);
     49c0:	4c0c      	ldr	r4, [pc, #48]	; (49f4 <thread_base_read+0x40>)
 			bt_gatt_read(default_conn, &read_params_bpm_spo);
     49c2:	6830      	ldr	r0, [r6, #0]
     49c4:	4639      	mov	r1, r7
     49c6:	f00a fa67 	bl	ee98 <bt_gatt_read>
-			printk("BPM: %d \n", bpm_spo2[i]);
+			printk("BPM: %d \n", bpm_spo2[0]);
     49ca:	7821      	ldrb	r1, [r4, #0]
     49cc:	480a      	ldr	r0, [pc, #40]	; (49f8 <thread_base_read+0x44>)
     49ce:	f01d fe99 	bl	22704 <printk>
-			printk("SPO2: %d\n", bpm_spo2[i]);
-    49d2:	7821      	ldrb	r1, [r4, #0]
+			printk("SPO2: %d\n", bpm_spo2[1]);
+    49d2:	7861      	ldrb	r1, [r4, #1]
     49d4:	4809      	ldr	r0, [pc, #36]	; (49fc <thread_base_read+0x48>)
     49d6:	f01d fe95 	bl	22704 <printk>
     49da:	2100      	movs	r1, #0
-    49dc:	f44f 70a4 	mov.w	r0, #328	; 0x148
+    49dc:	f44f 4000 	mov.w	r0, #32768	; 0x8000
     49e0:	f01d faee 	bl	21fc0 <z_impl_k_sleep>
 	while (1) {
     49e4:	e7ea      	b.n	49bc <thread_base_read+0x8>
