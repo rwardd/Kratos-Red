@@ -296,7 +296,7 @@ void thread_base_read(void) {
 			printk("BPM: %d \n", bpm_spo2[0]);
 			printk("SPO2: %d\n", bpm_spo2[1]);
 		}
-		k_sleep(K_MSEC(10));
+		k_sleep(K_MSEC(1000));
 	}
 
 }

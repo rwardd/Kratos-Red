@@ -229,3 +229,16 @@ void scu_ble_connect_thread_entry(void)
 
 }
 
+void update_data_thread(void) {
+    struct max30102_data* recv_data;
+    while (1) {
+        recv_data = k_fifo_get(&bpm_spo2_fifo, K_FOREVER);
+        bpmSpoValues[0] = recv_data->heartRate;
+        bpmSpoValues[1] = recv_data->spo2;
+        printk("bpm: %d, Spo2: %d \n", bpmSpoValues[0], bpmSpoValues[1]);
+
+    }
+
+}
+
+

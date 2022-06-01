@@ -26,6 +26,9 @@ float beatsPerMinute;
 int beatAvg;
 float ratio;
 float correl;
+
+K_FIFO_DEFINE(bpm_spo2_fifo);
+
 //mainloop
 int bpm_spo2_thread_start() {
     const struct device* console_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
@@ -57,9 +60,11 @@ int bpm_spo2_thread_start() {
         // printk("%i\n\r", aun_ir_buffer[i]);
     }
     maxim_heart_rate_and_oxygen_saturation(aun_ir_buffer, n_ir_buffer_length, aun_red_buffer, &n_sp02, &ch_spo2_valid, &n_heart_rate, &ch_hr_valid);
+    struct max30102_data sense_data;
     while (1)
     {
         i = 0;
+
         //dumping the first 100 sets of samples in the memory and shift the last 400 sets of samples to the top
         for (i = 100;i < 500;i++)
         {
@@ -81,6 +86,16 @@ int bpm_spo2_thread_start() {
             // printk("HRvalid=%i, ", ch_hr_valid);
             // printk("SpO2=%i, ", n_sp02);
             // printk("SPO2Valid=%i\n\r", ch_spo2_valid);
+            if (!ch_hr_valid) {
+                n_heart_rate = 0;
+            }
+            if (!ch_spo2_valid) {
+                n_sp02 = 0;
+            }
+            sense_data.heartRate = n_heart_rate;
+            sense_data.spo2 = n_sp02;
+            k_fifo_put(&bpm_spo2_fifo, &sense_data);
+
         }
         maxim_heart_rate_and_oxygen_saturation(aun_ir_buffer, n_ir_buffer_length, aun_red_buffer, &n_sp02, &ch_spo2_valid, &n_heart_rate, &ch_hr_valid);
     }
