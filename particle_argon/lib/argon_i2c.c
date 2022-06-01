@@ -60,6 +60,7 @@ void print_grid(uint16_t* grid) {
 	for (int i = 0; i < 64; i++) {
 		if (i % 8 == 0) {
 			printk("\n");
+			printk("%d,", i/8);
 		}
 		printk("%f,", 0.25* grid[i]);
 	}
@@ -134,9 +135,9 @@ void amg8833_thread_entry(void) {
 		for (int i = 0; i < MAX_PIXELS; i++) {
 			mappedGrid[i] = map_grid(pixelGrid[i] * 0.25);
 		}
-		print_grid_mapped(mappedGrid);
-		
-		k_msleep(50);
+		//print_grid_mapped(mappedGrid);
+		print_grid(pixelGrid);
+		k_msleep(10);
 		//printk("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
 		
